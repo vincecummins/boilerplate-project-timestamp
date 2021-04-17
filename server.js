@@ -20,10 +20,34 @@ app.get("/", function (req, res) {
 
 
 // your first API endpoint... 
-app.get("/api/hello", function (req, res) {
-  res.json({greeting: 'hello API'});
-});
 
+app.get("/", function (req, res) {
+  res.sendFile(__dirname + '/views/index.html');
+});
+const parseDateString = dateString => {
+  let date;
+  if (+dateString) {
+    date = new Date(+dateString);
+  } else if (dateString === undefined) {
+    date = new Date();
+  } else {
+    date = new Date(dateString);
+  }
+  if (date.getTime() === NaN || date.toUTCString() === "Invalid Date") {
+    return { "error" : "Invalid Date" };
+  } else {
+    return { unix: date.getTime(), utc: date.toUTCString() };
+  }
+}
+
+// your first API endpoint... 
+// app.get("/api/hello", function (req, res) {
+//   res.json({greeting: 'hello API'});
+// });
+app.get('/api/:date_string?', (req, res) => {
+  res.json(parseDateString(req.params.date_string));
+  
+})
 
 
 // listen for requests :)
